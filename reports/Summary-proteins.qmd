@@ -1,0 +1,48 @@
+---
+title: "Summary of IAA proteins"
+author: "Dr. Kristina Gagalova"
+format:
+  gfm:
+    toc: true
+    code-tools: true
+    fig-dir: "figs"
+execute:
+  echo: true
+---
+
+## Load the protein dataset
+```{r load-proteins}
+
+library(seqinr)
+library(idpr)
+
+# Read sequences from FASTA file
+sequences <- read.fasta(file = "../data/sequences/S.orientale-muts.fasta", seqtype = "AA", as.string = TRUE, set.attributes = FALSE)
+
+```
+
+## Calculate summary of proteins
+```{r idr-proteins}
+
+for (i in seq_along(sequences)) {
+      seq_name <- names(sequences)[i]
+      seq_string <- sequences[[i]]
+      
+      cat("\n=====================================\n")
+      cat("Processing sequence:", seq_name, "\n")
+      cat("=====================================\n\n")
+      
+      # Check valid input
+      if (!is.character(seq_string) || length(seq_string) != 1) {
+      warning(paste("Skipping", seq_name, "- invalid sequence format"))
+        next
+      }
+      
+      # Run summaries
+      cat("=== IDProfile Summary ===\n")
+      profile <- idprofile(seq_string, proteinName=seq_name)
+      print(profile[1:5])
+      
+    }
+```
+
